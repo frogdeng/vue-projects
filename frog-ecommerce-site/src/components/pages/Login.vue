@@ -1,11 +1,11 @@
 <template>
     <div>
-        <form class="form-signin">
+        <form class="form-signin" @submit.prevent="signin">
           <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
           <label for="inputEmail" class="sr-only">Email address</label>
-          <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+          <input type="email" id="inputEmail" class="form-control" placeholder="Email address" v-model="user.username" required autofocus>
           <label for="inputPassword" class="sr-only">Password</label>
-          <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+          <input type="password" id="inputPassword" class="form-control" placeholder="Password" v-model="user.password" required>
           <div class="checkbox mb-3">
             <label>
               <input type="checkbox" value="remember-me"> Remember me
@@ -19,10 +19,28 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+  name: 'login',
+  data(){
+    return{
+      user: {
+        username: '',
+        password: '',
+      }
+    };
+  },
+
+  methods: {
+    signin(){
+      const api = 'https://vue-course-api.hexschool.io/admin/signin';
+      const vm  = this;
+      this.axios.post(api, vm.user).then((response) => {
+        console.log(response.data)
+        if(response.data.success){
+          vm.$router.push('/')
+        }
+      })
+    }
+  },
 }
 </script>
 
