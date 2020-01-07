@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import HelloWorld from '@/components/HelloWorld.vue'
 import Login from '@/components/pages/Login.vue'
 import Products from '@/components/pages/Products.vue'
 
@@ -10,8 +10,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home,
+    name: 'helloworld',
+    component: HelloWorld,
     meta: {requiresAuth: true}
   },
   {

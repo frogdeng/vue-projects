@@ -14,13 +14,6 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-router.beforeEach((to, from, next)=>{
-  console.log(to,from,next)
-  if(to.meta.requiresAuth){
-   
-  }else{
-    next();
-  }
-
-  
-})
+router.beforeEach((to, from, next) => {
+ console.log(to, from, next)
+});
