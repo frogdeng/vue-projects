@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
+// import HelloWorld from '@/components/HelloWorld.vue'
 import Login from '@/components/pages/Login.vue'
 import Products from '@/components/pages/Products.vue'
 import Dashboard from '@/components/Dashboard.vue'
@@ -17,12 +17,12 @@ const routes = [
     path: '*',
     redirect:'login'
   },
-  {
-    path: '/',
-    name: 'helloworld',
-    component: HelloWorld,
-    meta: { requiresAuth: true }
-  },
+  // {
+  //   path: '/',
+  //   name: 'helloworld',
+  //   component: HelloWorld,
+  //   meta: { requiresAuth: true }
+  // },
 
   {
     path: '/login',
@@ -37,7 +37,7 @@ const routes = [
    
     children: [
       {
-        path: 'Products',
+        path: 'products',
         name: 'Products',
         component: Products,
         meta: { requiresAuth: true },
