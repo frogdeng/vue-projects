@@ -3,35 +3,54 @@ import VueRouter from 'vue-router'
 import HelloWorld from '@/components/HelloWorld.vue'
 import Login from '@/components/pages/Login.vue'
 import Products from '@/components/pages/Products.vue'
-
-
+import Dashboard from '@/components/Dashboard.vue'
 Vue.use(VueRouter)
 
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios, axios)
+
+
+
 const routes = [
+  {
+    path: '*',
+    redirect:'login'
+  },
   {
     path: '/',
     name: 'helloworld',
     component: HelloWorld,
-    meta: {requiresAuth: true}
+    meta: { requiresAuth: true }
   },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  },
+
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+   
   },
   {
-    path: '/products',
-    name: 'Products',
-    component: Products
-  }
+    path: '/admin',
+    name: 'admin',
+    component: Dashboard,
+   
+    children: [
+      {
+        path: 'Products',
+        name: 'Products',
+        component: Products,
+        meta: { requiresAuth: true },
+     },
+    ],
+  },
+
+  // {
+  //   path: '/products',
+  //   name: 'Products',
+  //   component: Products,
+  //   meta: { requiresAuth: true }
+  // }
 ]
 
 const router = new VueRouter({
@@ -40,4 +59,46 @@ const router = new VueRouter({
   routes
 })
 
+// router.beforeEach((to, from, next) => {
+//   console.log('to=',to, 'from=',from, 'next=', next)
+//   if(to.meta.requiresAuth){
+//     const api = 'https://vue-course-api.hexschool.io/api/user/check';
+//       axios.post(api).then((response) => {
+//         console.log(response.data)
+//         if(response.data.success){
+//           next()
+//         }else{
+//           next({
+//             path:'/login'
+//           })
+//         }
+//       })
+//   }else{
+//     next()
+//   }
+//  });
+
+
+
+
+router.beforeEach((to, from, next) => {
+  console.log('to=',to, 'from=',from, 'next=', next)
+  if(to.meta.requiresAuth){
+    const api = 'https://vue-course-api.hexschool.io/api/user/check';
+    axios.post(api).then((response) => {
+      if(response.data.success){
+        next();
+      }else{
+        next({
+          path: '/login'
+        })
+      }
+    })
+  }else{
+    next();
+  }
+})
+
+
 export default router
+
