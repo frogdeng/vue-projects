@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="text-right mt-4">
-        <button class="btn btn-primary" @click="openModal(true)">建立新產品 go! </button>
+        <button class="btn btn-primary" @click="openModal(true)">建立新產品</button>
       </div>
 
       <!-- Modal -->
@@ -30,7 +30,7 @@
                       <i class="fas fa-spinner fa-spin"></i>
                     </label>
                     <input type="file" id="customFile" class="form-control"
-                      ref="files">
+                      ref="files" @change="uploadFile">
                   </div>
                   <img img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
                     class="img-fluid" alt="">
@@ -153,7 +153,7 @@ export default {
       const vm  = this
       this.$http.get(api).then((response) => {
         console.log(response.data)
-        vm.products = response.data.products;
+        this.products = response.data.products;
       });
     },
     openModal(isNew, item){
@@ -188,6 +188,9 @@ export default {
         }
       });
     },
+    uploadFile(){
+      
+    }
   },
   // 觸發getProductus()的 hook
   created(){
