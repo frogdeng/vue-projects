@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="text-right mt-4">
-        <button class="btn btn-primary" @click="openModal(true)">建立新產品</button>
+        <button class="btn btn-primary" @click="openModal(true)">建立新產品 go! </button>
       </div>
 
       <!-- Modal -->
