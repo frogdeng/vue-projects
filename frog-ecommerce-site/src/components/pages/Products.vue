@@ -111,6 +111,7 @@
           <th width="120">售價</th>
           <th width="100">是否啟用</th>
           <th width="80">編輯</th>
+          <th width="80">刪除</th>
         </tr>
       </thead>
       <tbody>
@@ -129,6 +130,9 @@
         </td>
         <td>
           <button class="btn btn-outline-primary btn-sm" @click="openModal(false, item)">編輯</button>
+        </td>
+        <td>
+          <button class="btn btn-outline-danger btn-sm" @click="delPorduct(item)">刪除</button>
         </td>
       </tr>
       </tbody>
@@ -166,6 +170,14 @@ export default {
       }
       $('#productModal').modal('show')
     },
+    delPorduct(){
+      let api = `https://vue-course-api.hexschool.io/api/frogdeng/admin/product/${vm.tempProduct.id}`;
+      const vm  = this
+      this.$http.delete(api).then((response)=>{
+        this.products = response.data.products;
+        vm.getProducts()
+      })
+    },
     updateProduct(){
       let api = 'https://vue-course-api.hexschool.io/api/frogdeng/admin/product';
       let httpMethod = 'post'
@@ -188,6 +200,7 @@ export default {
         }
       });
     },
+
     uploadFile(){
       
     }
