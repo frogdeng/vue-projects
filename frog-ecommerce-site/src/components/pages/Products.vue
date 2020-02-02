@@ -1,5 +1,9 @@
 <template>
   <div>
+      <!-- loading -->
+      <loading :active.sync="isLoading"></loading>
+
+
       <div class="text-right mt-4">
         <button class="btn btn-primary" @click="openModal(true)">建立新產品</button>
       </div>
@@ -27,13 +31,12 @@
                   </div>
                   <div class="form-group">
                     <label for="customFile">或 上傳圖片
-                      <i class="fas fa-spinner fa-spin"></i>
+                      <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
                     </label>
                     <input type="file" id="customFile" class="form-control"
                       ref="files" @change="uploadFile">
                   </div>
-                  <img img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
-                    class="img-fluid" alt="">
+                  <img class="img-fluid" :src="tempProduct.imageUrl" alt="">
                 </div>
                 <div class="col-sm-8">
                   <div class="form-group">
@@ -146,10 +149,10 @@
         <td>{{ item.category }}</td>
         <td>{{ item.title }}</td>
         <td class="">
-          {{ item.origin_price}}
+          {{ item.origin_price | currency}}
         </td>
         <td class="">
-          {{ item.price}}
+          {{ item.price | currency}}
         </td>
         <td>
           <span v-if="item.is_enabled" class="text-success">啟用</span>
@@ -166,6 +169,27 @@
       </tr>
       </tbody>
     </table>
+
+    <!-- pagination -->
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item" :class="{'disabled': !pagination.has_pre}">
+          <a class="page-link" href="#" aria-label="Previous"
+          @click.prevent = "getProducts(pagination.current_page - 1)">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item" v-for="page in pagination.total_pages" :key="page" :class="{'active' : pagination.current_page === page }">
+          <a class="page-link" href="#" @click.prevent="getProducts(page)">{{ page }}</a>
+        </li>
+        <li class="page-item" :class="{'disabled': !pagination.has_next}">
+          <a class="page-link" href="#" aria-label="Next"
+          @click.prevent = "getProducts(pagination.current_page + 1)">>
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -176,17 +200,25 @@ export default {
   data(){
     return{
       products:[],
+      pagination:{},
       tempProduct: {},
       isNew: false,
+      isLoading: false,
+      status:{
+        fileUploading: false
+      }
     };
   },
   methods:{
-    getProducts(){
-      let api = 'https://vue-course-api.hexschool.io/api/frogdeng/products';
+    getProducts(page = 1){
+      let api = `https://vue-course-api.hexschool.io/api/frogdeng/products?page=${page}`;
       const vm  = this
+      vm.isLoading = true
       this.$http.get(api).then((response) => {
         console.log(response.data)
-        this.products = response.data.products;
+        vm.isLoading = false;
+        vm.products = response.data.products;
+        vm.pagination = response.data.pagination;
       });
     },
     
@@ -223,12 +255,12 @@ export default {
         }
       });
     },
+
     openDelProductModal(item){
       const vm = this;
       this.tempProduct = Object.assign({}, item)
       $('#delProductModal').modal('show')
     },
-    
     delProduct(){
       const vm  = this
       let api = `https://vue-course-api.hexschool.io/api/frogdeng/admin/product/${this.tempProduct.id}`;
@@ -240,12 +272,32 @@ export default {
     },
 
     uploadFile(){
-      
-    }
+      // console.log(this)
+      const uploadedFile = this.$refs.files.files[0]
+      const vm  = this
+      const formData = new FormData()
+      formData.append('file-to-upload', uploadedFile)
+      let api = `https://vue-course-api.hexschool.io/api/frogdeng/admin/upload`;
+      vm.status.fileUploading = true
+      this.$http.post(api, formData,{
+        headers:{
+          'Content-Type' : 'multipart/form-data'
+          }
+        }).then((response)=>{
+          console.log(response.data)
+          vm.status.fileUploading = false
+          if(response.data.success){
+            vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
+          } else {
+            this.$bus.$emit('message:push', response.data.message, 'danger')
+          }
+      })
+    },
   },
   // 觸發getProductus()的 hook
   created(){
     this.getProducts();
+    
   },
  
 }

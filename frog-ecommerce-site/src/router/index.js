@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import Login from '@/components/pages/Login.vue'
 import Products from '@/components/pages/Products.vue'
 import Dashboard from '@/components/Dashboard.vue'
+import CustomerOrder from '@/components/pages/CustomerOrders.vue'
 Vue.use(VueRouter)
 
 import axios from 'axios'
@@ -34,13 +35,24 @@ const routes = [
     path: '/admin',
     name: 'admin',
     component: Dashboard,
-   
     children: [
       {
         path: 'products',
         name: 'Products',
         component: Products,
         meta: { requiresAuth: true },
+     },
+    ],
+  },
+  {
+    path: '/',
+    name: 'Dashboard',
+    component: Dashboard,
+    children: [
+      {
+        path: 'customer_order',
+        name: 'CustomerOrder',
+        component: CustomerOrder,
      },
     ],
   },
