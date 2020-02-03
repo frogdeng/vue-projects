@@ -1,5 +1,7 @@
 <template>
-    <div class="row mt-4">
+    <div class="">
+        <loading :active.sync="isLoading"></loading>   
+        <div class="row mt-4">
         <div class="col-md-4 mb-4" v-for="item in products" :key="item.id">
             <div class="card border-0 shadow-sm" >
                 <div style="height: 200px; background-size: cover; background-position: top"
@@ -43,7 +45,8 @@
                 <tbody>
                     <tr v-for="item in cart.carts">
                     <td class="align-middle">
-                        <button type="button" class="btn btn-outline-danger btn-sm">
+                        <button type="button" class="btn btn-outline-danger btn-sm" 
+                        @click="removeCartItem(item.id)">
                         <i class="far fa-trash-alt"></i>
                         </button>
                     </td>
@@ -54,24 +57,25 @@
                         </div> -->
                     </td>
                     <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
-                    <td class="align-middle text-right">{{ item.final_total }}</td>
+                    <td class="align-middle">{{ item.final_total }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr >
                     <td colspan="3" class="text-right">總計</td>
                     <td class="text-right">{{ cart.total }}</td>
                     </tr>
-                    <tr>
+                    
+                    <tr v-if="cart.final_total != cart.total">
                     <td colspan="3" class="text-right text-success">折扣價</td>
                     <td class="text-right text-success">{{ cart.final_total }}</td>
                     </tr>
                 </tfoot>
                 </table>
                 <div class="input-group mb-3 input-group-sm">
-                <input type="text" class="form-control" placeholder="請輸入優惠碼">
+                <input type="text" class="form-control" v-model="coupon_code"  placeholder="請輸入優惠碼">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button">
+                    <button class="btn btn-outline-secondary" type="button" @click=" addCouponCode()">
                     套用優惠碼
                     </button>
                 </div>
@@ -124,6 +128,7 @@
 
         
     </div>
+    </div>
 </template>
 
 <script>
@@ -134,11 +139,13 @@ export default {
             products: [],
             product: {},
             isLoading: false,
+            coupon_code:'',
             status:{
                 loadingItem: ''
             },
-            cart:[]
-        }
+            cart:[],
+        };
+       
     },
     methods: {
         getProducts(){
@@ -188,7 +195,30 @@ export default {
                 vm.isLoading = false;
             });        
         },
-        
+        removeCartItem(id){
+            const vm = this;
+            let api = `https://vue-course-api.hexschool.io/api/frogdeng/cart/${id}`;
+            vm.isLoading = true;
+            this.$http.delete(api).then((response) => {
+                // vm.cart = response.data.data;
+                console.log(response.data)
+                vm.isLoading = false;
+                this.getCart();
+                vm.isLoading = true;
+            });    
+        },
+        addCouponCode(){
+            const vm = this;
+            let api = `https://vue-course-api.hexschool.io/api/frogdeng/coupon`;
+            const coupon = {
+                code: vm.coupon_code
+            }
+            vm.isLoading = true;
+            this.$http.post(api, {data:coupon}).then((response) => {
+                console.log(response)
+                vm.isLoading = false;
+            });    
+        },
     
     },
     created() {
