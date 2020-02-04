@@ -5,6 +5,7 @@ import Login from '@/components/pages/Login.vue'
 import Products from '@/components/pages/Products.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import CustomerOrder from '@/components/pages/CustomerOrders.vue'
+import CustomerCheckout from '@/components/pages/CustomerCheckout.vue'
 Vue.use(VueRouter)
 
 import axios from 'axios'
@@ -54,6 +55,11 @@ const routes = [
         name: 'CustomerOrder',
         component: CustomerOrder,
      },
+     {
+      path: 'customer_checkout/:orderId',
+      name: 'CustomerCheckout',
+      component: CustomerCheckout,
+      },
     ],
   },
 
