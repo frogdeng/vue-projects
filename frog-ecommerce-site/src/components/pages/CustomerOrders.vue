@@ -32,7 +32,6 @@
                 </div>
             </div>
         </div>
-
         <!-- cart -->
             <div class="cart-section">
             <table class="table">
@@ -82,7 +81,65 @@
                 </div>
             </div>
 
+        <!-- 結帳頁面 -->
+           
+            <div class="cart-section">
+                <div class="my-5 row justify-content-center">
+                        <ValidationObserver v-slot="{ handleSubmit }">
+                        <form class="" @submit.prevent="createOrder">
+                            <!-- mail 欄位 -->
+                            <div class="form-group">
+                            <label for="useremail">Email</label>
+                            <ValidationProvider name="E-mail" rules="required|email" v-slot="{ errors }">
+                                <input type="email" class="form-control" name="email" id="useremail"
+                                v-model="form.user.email" placeholder="請輸入 Email" required>
+                                <span class="text-danger">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                            </div>
+                        
+                            <!-- 姓名 欄位 -->
+                            <div class="form-group">
+                            <label for="username">收件人姓名</label>
+                            <ValidationProvider name="First Name" rules="required|alpha" v-slot="{ errors }">
+                            <input type="text" class="form-control" name="name" id="username"
+                                v-model="form.user.name" placeholder="輸入姓名" required>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                            </div>
+                        
+                            <!-- 電話 欄位 -->
+                            <div class="form-group">
+                            <label for="usertel">收件人電話</label>
+                            <ValidationProvider name="tel" rules="required|numeric" v-slot="{ errors }">
+                            <input type="tel" class="form-control" id="usertel" v-model="form.user.tel" placeholder="請輸入電話" required>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                            </ValidationProvider>
+                            </div>
 
+                            <!-- 地址 欄位 -->
+                            <div class="form-group">
+                            <label for="useraddress">收件人地址</label>
+                            <ValidationProvider name="address" rules="required" v-slot="{ errors }">
+                            <input type="text" class="form-control" name="address" id="useraddress" v-model="form.user.address"
+                                placeholder="請輸入地址" required>
+                            <span class="text-danger">{{ errors[0] }}</span>
+                             </ValidationProvider>
+                            </div>
+                        
+                            <div class="form-group">
+                            <label for="comment">留言</label>
+                            <textarea name="" id="comment" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
+                            </div>
+                            <div class="text-right">
+                            <button class="btn btn-danger">送出訂單</button>
+                            </div>
+                        </form>
+                        </ValidationObserver>
+                    </div>
+                </div>
+        
+        
+        
         <!-- modal -->
         <div class="modal fade" id="productModal" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -143,9 +200,17 @@ export default {
             status:{
                 loadingItem: ''
             },
+            form: {
+                "user": {
+                "name": "",
+                "email": "",
+                "tel": "",
+                "address": ""
+                },
+                "message": "",  
+            },
             cart:[],
         };
-       
     },
     methods: {
         getProducts(){
@@ -219,6 +284,17 @@ export default {
                 vm.isLoading = false;
             });    
         },
+        createOrder(){
+            const vm = this;
+            let api = `https://vue-course-api.hexschool.io/api/frogdeng/order`;
+            const order = vm.form
+            vm.isLoading = true;
+            this.$http.post(api, {data: order}).then((response) => {
+                console.log('訂單建立', response)
+                // order = response
+                vm.isLoading = false;
+            });    
+        }
     
     },
     created() {
@@ -234,4 +310,7 @@ export default {
         width: 80%
         margin: 50px auto
         clear: both
+        .row
+            span
+                width: 50%
 </style>
