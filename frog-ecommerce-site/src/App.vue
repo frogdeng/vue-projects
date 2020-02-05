@@ -11,14 +11,12 @@
 <script>
 export default {
   name: 'App',
-  // created(){
-  //   const api = 'https://vue-course-api.hexschool.io/api/frogdeng/products'
-  //   this.axios.get(api).then((response) => {
-  //     console.log(response.data)
-  //   })
-  // }
-
+  
+  created(){
+    console.log(process.env.VUE_APP_API)
+  } 
 }
+
 </script>
 
 <style lang="scss">

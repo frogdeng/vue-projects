@@ -59,7 +59,7 @@ const routes = [
       path: 'customer_checkout/:orderId',
       name: 'CustomerCheckout',
       component: CustomerCheckout,
-      },
+    },
     ],
   },
 
