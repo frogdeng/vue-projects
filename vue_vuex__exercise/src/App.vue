@@ -70,6 +70,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   name: 'App',
   data() {
@@ -95,9 +96,9 @@ export default {
     removeCart(id) {
       const vm = this;
       const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart/${id}`;
-      // vm.isLoading = true;
+      vm.$store.state.isLoading = true;
       this.$http.delete(url).then((response) => {
-        // vm.isLoading = false;
+        vm.$store.state.isLoading = false;
         vm.getCart();
         console.log('刪除購物車項目', response);
       });
@@ -107,6 +108,7 @@ export default {
     isLoading() {
       return this.$store.state.isLoading
     },
+    
   },
   created() {
     this.getCart();

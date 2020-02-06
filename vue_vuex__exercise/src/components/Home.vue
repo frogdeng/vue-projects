@@ -1,4 +1,5 @@
 <template>
+
   <div>
     <div class="container main-content mb-3">
       <div class="row">
@@ -69,14 +70,12 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   name: 'Home',
   data() {
     return {
-      products: [],
       searchText: '',
-      categories: [],
-      isLoading: false,
     };
   },
   computed: {
@@ -90,30 +89,37 @@ export default {
       }
       return this.products;
     },
+    categories(){
+      return this.$store.state.categories;
+    },
+    products(){
+      return this.$store.state.products;
+    }
   },
   methods: {
     getProducts() {
-      const vm = this;
-      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products/all`;
-      vm.$store.state.isLoading = true
-      this.$http.get(url).then((response) => {
-        vm.products = response.data.products;
-        console.log('取得產品列表:', response);
-        vm.getUnique();
-        vm.$store.state.isLoading = false;
-      });
+      this.$store.dispatch('getProducts');
+      // const vm = this;
+      // const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products/all`;
+      // vm.$store.dispatch('updateLoading', true)
+      // this.$http.get(url).then((response) => {
+      //   vm.products = response.data.products;
+      //   console.log('取得產品列表:', response);
+      //   vm.getUnique();
+      //   vm.$store.dispatch('updateLoading', false)
+      // });
     },
     addtoCart(id, qty = 1) {
       const vm = this;
       const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
-      vm.isLoading = true;
+       vm.$store.dispatch('updateLoading', true)
       const item = {
         product_id: id,
         qty,
       };
-      vm.isLoading = true;
+       vm.$store.dispatch('updateLoading', true)
       this.$http.post(url, { data: item }).then((response) => {
-        vm.isLoading = false;
+        vm.$store.dispatch('updateLoading', false)
         console.log('加入購物車:', response);
       });
     },
