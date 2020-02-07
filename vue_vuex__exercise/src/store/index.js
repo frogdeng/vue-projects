@@ -10,6 +10,9 @@ export default new Vuex.Store({
     isLoading: false,
     products: [],
     categories: [],
+    cart: {
+      carts: [],
+    },
   },
   actions: {
     updateLoading(context, status) {
@@ -28,6 +31,41 @@ export default new Vuex.Store({
         context.commit('LOADING', false)
       });
     },
+    getCart(context) {
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+      context.commit('LOADING', true)
+      axios.get(url).then((response) => {
+        if (response.data.data.carts) {
+          // vm.cart = response.data.data;
+          context.commit('CART', response.data.data)
+        }
+        context.commit('LOADING', false)
+        console.log('取得購物車', response.data.data);
+      });
+    },
+    removeCart(context,id) {
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart/${id}`;
+      context.commit('LOADING', true)
+      axios.delete(url).then((response) => {
+        context.commit('LOADING', false)
+        context.dispatch('getCart')
+        console.log('刪除購物車項目', response);
+      });
+    },
+    addtoCart(context, {id, qty}) {
+      const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+      context.commit('LOADING', true)
+      const item = {
+        product_id: id,
+        qty,
+      };
+      context.commit('LOADING', true)
+      axios.post(url, { data: item }).then((response) => {
+        context.commit('LOADING', false);
+        context.dispatch('getCart');
+        console.log('加入購物車:', response);
+      });
+    },
   },
   mutations: {
     LOADING(state, status){
@@ -43,5 +81,18 @@ export default new Vuex.Store({
         });
         state.categories = Array.from(categories);
     },
+    CART(state, payload){
+      state.cart = payload
+    },
+  },
+  
+  getters:{
+    categories(state){
+      return state.categories
+    },
+    products(state){
+      return state.products;
+    }
   }
+
 });
