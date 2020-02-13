@@ -34,7 +34,9 @@
           <div class="col-10">
             <div class="bg-white p-3 shadow-sm">
               <h4>熱門行政區</h4>
-              <button class="btn btn-primary px-4">苓雅區</button>
+              <button class="btn btn-primary px-4" @click.prevent="currentLocation ='苓雅區'">苓雅區</button>
+              <button class="btn btn-primary px-4" @click.prevent="currentLocation ='左營區'">左營區</button>
+
             </div>
           </div>
         </div>
