@@ -7,17 +7,20 @@
         <a href="#">Completed</a>
       </div>
     </div>
-    <div class="container my-4">
-      <div class="position-relative">
+    <div class="container my-4" >
+      <div class="position-relative"  v-if="isNewTodo === false">
         <i class="fas fa-plus fa-lg text-black-50 position-absolute" style="left: 1rem; top: 1.15rem"></i>
-        <input type="text" class="form-control form-control-lg pl-5">
+        <input type="text" class="form-control form-control-lg pl-5" placeholder="" @click="isNewTodo = true">
       </div>
 
       <div class="mt-4">
 
-        <edit-todo-item></edit-todo-item>
+        <edit-todo-item
+        v-if="isNewTodo === true"
+        @closeEditTodo="closeEdit"
+        ></edit-todo-item>
 
-        <todo-item></todo-item>
+        <todo-item :todo="item" v-for="item in todos" :key="item.id"></todo-item>
       </div><!-- outer -->
 
       <!-- <router-view/> -->
@@ -36,7 +39,7 @@ export default {
     return {
       todos: [
         {
-          message: '第二筆資訊',
+          message: ' 第二筆資訊',
           startDate: '2018-06-06',
           endDate: '2018-06-28',
           timestamp: 1528254270,
@@ -45,13 +48,19 @@ export default {
           id: 2,
           completed: 'progress'
         }
-      ]
+      ],
+      isNewTodo: false
     }
   },
   components: {
     TodoItem,
     EditTodoItem
-  }
+  },
+  methods: {
+    closeEdit () {
+      this.isNewTodo = false
+    }
+  },
 }
 </script>
 

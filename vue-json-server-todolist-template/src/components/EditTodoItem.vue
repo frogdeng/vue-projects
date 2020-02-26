@@ -7,7 +7,7 @@
           <label for="456"></label>
         </div> -->
         <div class="todo-title">
-          <input type="text" value="可輸入內容" class="form-control">
+          <input type="text" value="可輸入內容" class="form-control" v-model = "catchTodo.message">
         </div>
       </div>
       <div class="todo-body">
@@ -41,8 +41,8 @@
           <button class="btn text-danger w-50 btn-lg">
             <i class="fas fa-times"></i> Cancel
           </button>
-          <button class="btn btn-primary w-50 btn-lg">
-            <i class="fas fa-plus"></i> Update Task
+          <button class="btn btn-primary w-50 btn-lg" @click="updateTodo()">
+            <i class="fas fa-plus"></i> 新增 Task
           </button>
         </div>
       </div>
@@ -56,6 +56,26 @@ export default {
   name: 'EditTodo',
   data () {
     return {
+      catchTodo: {}
+    }
+  },
+  methods: {
+    updateTodo () {
+      // console.log(this.catchTodo)
+      const vm = this
+      const api = 'http://localhost:7000/todos'
+      const todo = {
+        ...vm.catchTodo,
+        stared: false,
+        completed: 'progress'
+      }
+      vm.$http.post(api, todo).then((response) => {
+        console.log(response)
+        vm.closeTodo()
+      })
+    },
+    closeTodo () {
+      this.$emit('closeEditTodo')
     }
   }
 }

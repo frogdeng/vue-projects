@@ -8,7 +8,7 @@
           <label for="123"></label>
         </div>
         <label class="todo-title">
-          <span>第一筆資訊</span>
+          <span>{{todo.message}}</span>
         </label>
         <div class="todo-control">
           <a href="#" class="text-muted">
@@ -20,9 +20,9 @@
       </div>
       <div class="todo-footer text-secondary">
         <i class="far fa-calendar-alt"></i>
-        <span>from: 2018-06-28</span>
+        <span>from: {{todo.startDate}}</span>
         <span> ~ </span>
-        <span>to: 2018-06-28 </span>
+        <span>to: {{todo.endDate}} </span>
         <!-- <i class="far fa-file ml-3"></i> -->
         <i class="fas fa-comment-dots ml-3"></i> 3
       </div>
