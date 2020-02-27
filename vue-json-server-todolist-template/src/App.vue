@@ -14,13 +14,13 @@
       </div>
 
       <div class="mt-4">
-
         <edit-todo-item
         v-if="isNewTodo === true"
-        @closeEditTodo="closeEdit"
-        ></edit-todo-item>
+        @closeEditTodo="closeEdit"></edit-todo-item>
+        <draggable v-model="todos"  @end="dragItem">
+          <todo-item :todo="item" v-for="item in todos" :key="item.id"></todo-item>
+        </draggable>
 
-        <todo-item :todo="item" v-for="item in todos" :key="item.id"></todo-item>
       </div><!-- outer -->
 
       <!-- <router-view/> -->
@@ -32,6 +32,7 @@
 <script>
 import TodoItem from './components/TodoItem'
 import EditTodoItem from './components/EditTodoItem'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'App',
@@ -54,13 +55,29 @@ export default {
   },
   components: {
     TodoItem,
-    EditTodoItem
+    EditTodoItem,
+    draggable
   },
   methods: {
     closeEdit () {
       this.isNewTodo = false
+      this.getData()
+    },
+    getData () {
+      const vm = this
+      const api = 'http://localhost:7000/todos'
+      vm.$http.get(api).then((response) => {
+        console.log(response)
+        vm.todos = response.data
+      })
+    },
+    dragItem () {
+      console.log(this.todos)
     }
   },
+  created () {
+    this.getData()
+  }
 }
 </script>
 
